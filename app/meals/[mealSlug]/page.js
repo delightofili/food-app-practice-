@@ -1,21 +1,31 @@
 import Image from "next/image";
-import classes from "./page.module.css";
-import { getMeal } from "@/lib/meal";
+import { notFound } from "next/navigation";
 
-function MealsDetailsPage({ params }) {
-  const meal = getMeal(params.slug);
+import { getMeal } from "@/lib/meals";
+import classes from "./page.module.css";
+
+export default async function MealDetailsPage({ params }) {
+  const { mealSlug } = await params;
+
+  const meal = getMeal(mealSlug);
+  if (!meal) {
+    notFound();
+  }
+
+  meal.instructions = meal.instructions.replace(/\n/g, "<br />");
+
   return (
     <>
       <header className={classes.header}>
         <div className={classes.image}>
-          <Image alt="" fill />
+          <Image src={meal.image} alt={meal.title} fill />
         </div>
         <div className={classes.headerText}>
           <h1>{meal.title}</h1>
           <p className={classes.creator}>
-            by <a href={`mail to: ${"email"}`}>name</a>
+            by <a href={`mailto:${meal.creator_email}`}>{meal.creator}</a>
           </p>
-          <p className={classes.summary}>Summary</p>
+          <p className={classes.summary}>{meal.summary}</p>
         </div>
       </header>
       <main>
@@ -29,5 +39,3 @@ function MealsDetailsPage({ params }) {
     </>
   );
 }
-
-export default MealsDetailsPage;
