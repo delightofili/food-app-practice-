@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import classes from "./meal-item.module.css";
+import { deleteMealAction } from "@/lib/action";
 
 function MealItem({ title, slug, image, summary, creator }) {
   return (
@@ -18,6 +19,9 @@ function MealItem({ title, slug, image, summary, creator }) {
         <p className={classes.summary}>{summary}</p>
         <div className={classes.actions}>
           <Link href={`/meals/${slug}`}>View Details</Link>
+          <form action={deleteMealAction.bind(null, slug)}>
+            <button type="submit">Delete Meal</button>
+          </form>
         </div>
       </div>
     </article>
